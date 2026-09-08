@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>CS621 Lesson 1 Review Deck</title>
+
+<style>
+:root{
+  --navy:#062e4f;
+  --teal:#12a6b8;
+  --cyan:#47c8d2;
+  --light:#eef7f9;
+  --ink:#172033;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Aptos,Arial,sans-serif;
+  background:#f6fafc;
+  color:var(--ink);
+}
+
+header{
+  background:linear-gradient(
+    100deg,
+    var(--navy) 0 82%,
+    var(--teal) 82%
+  );
+  padding:20px 5vw;
+  color:white;
+}
+
+.course{
+  font-weight:800;
+  letter-spacing:.06em;
+}
+
+.sub{
+  color:var(--cyan);
+  font-weight:700;
+  letter-spacing:.12em;
+  margin-top:6px;
+}
+
+main{
+  max-width:850px;
+  margin:35px auto;
+  padding:0 18px;
+}
+
+.title{
+  color:var(--navy);
+  font-size:2.4rem;
+}
+
+.card{
+  background:white;
+  border:1px solid #c5dde5;
+  border-radius:18px;
+  min-height:310px;
+  padding:36px;
+  box-shadow:0 8px 25px rgba(6,46,79,.08);
+  position:relative;
+}
+
+.badge{
+  display:inline-block;
+  background:var(--teal);
+  color:white;
+  border-radius:8px;
+  padding:8px 12px;
+  font-weight:800;
+}
+
+.term{
+  font-size:2.6rem;
+  color:var(--navy);
+  font-weight:800;
+  margin:28px 0;
+}
+
+.answer{
+  font-size:1.25rem;
+  line-height:1.55;
+  background:var(--light);
+  padding:18px;
+  border-left:7px solid var(--teal);
+  border-radius:8px;
+}
+
+button{
+  background:var(--teal);
+  color:white;
+  border:0;
+  border-radius:9px;
+  padding:12px 18px;
+  font-weight:800;
+  margin:18px 8px 0 0;
+  cursor:pointer;
+}
+
+button.alt{
+  background:var(--navy);
+}
+
+.count{
+  position:absolute;
+  right:24px;
+  top:20px;
+  color:#607482;
+}
+
+.footer{
+  text-align:center;
+  color:#526574;
+  font-size:.82rem;
+  margin:25px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="course">
+    ▣ CS621 / CYBERSECURITY FOUNDATIONS
+  </div>
+
+  <div class="sub">
+    LESSON 1 REVIEW DECK
+  </div>
+</header>
+
+<main>
+
+<h1 class="title">Key Terms and Concepts</h1>
+
+<section class="card">
+
+  <span class="badge" id="type">TERM</span>
+
+  <span class="count" id="count"></span>
+
+  <div class="term" id="term"></div>
+
+  <div class="answer" id="answer">
+    Think of the definition or answer, then reveal it.
+  </div>
+
+  <button onclick="showAnswer()">
+    Reveal Answer
+  </button>
+
+  <button class="alt" onclick="nextCard()">
+    Next Card
+  </button>
+
+</section>
+
+<div class="footer">
+  PROTECT SYSTEMS. PROTECT INFORMATION. PROTECT PEOPLE.
+</div>
+
+</main>
+
+<script>
+
+const cards = [
+
+  [
+    'TERM',
+    'Asset',
+    'Something valuable enough to protect.'
+  ],
+
+  [
+    'TERM',
+    'Threat',
+    'Something capable of causing harm.'
+  ],
+
+  [
+    'TERM',
+    'Vulnerability',
+    'A weakness that could be exploited.'
+  ],
+
+  [
+    'TERM',
+    'Impact',
+    'The harm or consequence that could result.'
+  ],
+
+  [
+    'TERM',
+    'Risk',
+    'The chance that a threat will exploit a vulnerability and cause impact to an asset.'
+  ],
+
+  [
+    'TERM',
+    'Control',
+    'A safeguard that reduces risk.'
+  ],
+
+  [
+    'CIA TRIAD',
+    'Confidentiality',
+    'Only authorized people, systems, or processes can access information.'
+  ],
+
+  [
+    'CIA TRIAD',
+    'Integrity',
+    'Information and systems remain accurate, complete, and protected from unauthorized change.'
+  ],
+
+  [
+    'CIA TRIAD',
+    'Availability',
+    'Authorized users can access needed information and services when required.'
+  ],
+
+  [
+    'ETHICS',
+    'Authorization',
+    'Permission to access, test, or change a system.'
+  ],
+
+  [
+    'ETHICS',
+    'Scope',
+    'The defined systems, actions, and time period included in approved security work.'
+  ],
+
+  [
+    'CHECK',
+    'Why is availability not public access?',
+    'Availability means authorized users can reach information when needed; it does not mean everyone may access it.'
+  ],
+
+  [
+    'CHECK',
+    'Why is a phishing email not the vulnerability?',
+    'The phishing email is the malicious attempt or threat mechanism. The vulnerability is the weakness it exploits, such as failure to verify the message or lack of MFA.'
+  ]
+
+];
+
+let i = 0;
+
+const typeEl = document.getElementById('type');
+const termEl = document.getElementById('term');
+const answerEl = document.getElementById('answer');
+const countEl = document.getElementById('count');
+
+function render(){
+  typeEl.textContent = cards[i][0];
+  termEl.textContent = cards[i][1];
+
+  answerEl.textContent =
+    'Think of the definition or answer, then reveal it.';
+
+  countEl.textContent =
+    `${i + 1} / ${cards.length}`;
+}
+
+function showAnswer(){
+  answerEl.textContent = cards[i][2];
+}
+
+function nextCard(){
+  i = (i + 1) % cards.length;
+  render();
+}
+
+render();
+
+</script>
+
+</body>
+</html>
