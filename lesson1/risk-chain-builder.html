@@ -1,1 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CS621 Risk Chain Builder</title>
+<style>
+:root{--navy:#062e4f;--teal:#12a6b8;--cyan:#47c8d2;--light:#eef7f9;--amber:#e8a21a;--red:#d84b4b;--green:#087a69;--ink:#172033;--muted:#526574}
+*{box-sizing:border-box}
+body{margin:0;font-family:Aptos,Arial,sans-serif;color:var(--ink);background:#f6fafc}
+.mast{background:linear-gradient(100deg,var(--navy) 0 82%,var(--teal) 82%);color:white;padding:18px 5vw;position:relative}
+.mast:before{content:"";position:absolute;inset:0;background-image:linear-gradient(90deg,transparent 0 11%,rgba(71,200,210,.18) 11.2% 11.4%,transparent 11.6% 100%);pointer-events:none}
+.course{font-size:1.05rem;font-weight:800;letter-spacing:.06em}.sub{color:var(--cyan);font-weight:700;letter-spacing:.13em;margin-top:6px}.lesson{position:absolute;right:3vw;top:12px;text-align:center;font-weight:800}.lesson b{font-size:2.2rem;display:block}
+main{max-width:980px;margin:26px auto;padding:0 18px}.title{font-size:2.5rem;color:var(--navy);margin:.2rem 0}.rule{height:4px;background:linear-gradient(90deg,var(--teal),var(--cyan),transparent);margin-bottom:18px}
+.progress-wrap{display:flex;align-items:center;gap:14px;margin:8px 0 18px}.progress-track{height:10px;background:#dcecf1;border-radius:999px;overflow:hidden;flex:1}.progress-bar{height:100%;width:25%;background:linear-gradient(90deg,var(--teal),var(--cyan));transition:width .25s ease}.progress-text{font-weight:800;color:var(--navy);white-space:nowrap}
+.card{background:white;border:1px solid #c5dde5;border-radius:14px;padding:20px;margin:16px 0;box-shadow:0 6px 20px rgba(6,46,79,.06)}.scenario{border-left:8px solid var(--teal)}h2{color:var(--navy);margin-top:0}label{display:block;font-weight:800;color:var(--navy);margin-top:13px}.hint{font-size:.92rem;color:var(--muted);margin:.35rem 0 0}.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+select,textarea{width:100%;padding:11px;border:1px solid #a8cbd6;border-radius:9px;font:inherit;background:white}select:focus,textarea:focus{outline:3px solid rgba(71,200,210,.28);border-color:var(--teal)}textarea{resize:vertical}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}button{background:var(--teal);color:white;border:0;border-radius:9px;padding:12px 18px;font-weight:800;cursor:pointer}button.secondary{background:var(--navy)}button.ghost{background:white;color:var(--navy);border:1px solid #a8cbd6}button:disabled{opacity:.5;cursor:not-allowed}.good{color:var(--green);font-weight:800}.bad{color:#b53030;font-weight:800}.notice{background:#fff7e6;border-left:6px solid var(--amber);padding:12px 14px;border-radius:6px}.model{background:var(--light);border-left:6px solid var(--teal);padding:12px 14px;border-radius:6px;margin-top:14px}.scorebox{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}.scorebox div{background:var(--light);border-radius:10px;padding:12px;text-align:center}.scorebox b{display:block;color:var(--navy);font-size:1.35rem}.footer{text-align:center;color:var(--muted);font-size:.82rem;margin:28px 0}
+[hidden]{display:none!important}
+@media(max-width:700px){.row,.scorebox{grid-template-columns:1fr}.lesson{display:none}.title{font-size:2rem}.progress-wrap{align-items:flex-start;flex-direction:column}.progress-track{width:100%}}
+</style>
+</head>
+<body>
+<header class="mast"><div class="course">▣ CS621 / CYBERSECURITY FOUNDATIONS</div><div class="sub">INTERACTIVE REVIEW</div><div class="lesson">LESSON<b>1</b></div></header>
+<main>
+<h1 class="title">Build the Risk Chain</h1><div class="rule"></div>
+<div class="progress-wrap" aria-label="Activity progress"><div class="progress-track"><div id="progressBar" class="progress-bar"></div></div><div id="progressText" class="progress-text">Scenario 1 of 4</div></div>
+<section id="activity">
+<section class="card scenario"><h2>Scenario</h2><p id="scenario"></p><p>Select the strongest answer for each part of the chain. Some alternatives may sound plausible, but choose the answer that best fits the scenario.</p></section>
+<section class="card">
+<div class="row">
+<div><label for="asset">Asset</label><select id="asset"></select></div>
+<div><label for="threat">Threat</label><select id="threat"></select></div>
+<div><label for="vuln">Vulnerability</label><select id="vuln"></select></div>
+<div><label for="impact">Possible Impact</label><select id="impact"></select></div>
+</div>
+<label for="control">Control</label><select id="control"></select>
+<label for="risk">State the risk</label>
+<p class="hint">Describe what could happen if the threat exploits the vulnerability.</p>
+<textarea id="risk" rows="3" placeholder="Example structure: A threat could exploit a vulnerability and cause an impact to an asset."></textarea>
+<label for="why">Explain how the control reduces risk</label>
+<textarea id="why" rows="3" placeholder="Explain how the selected control reduces the likelihood or impact of the risk."></textarea>
+<div class="actions"><button id="checkBtn" type="button">Check Answers</button><button id="nextBtn" class="secondary" type="button" disabled>Next Scenario</button><button id="resetBtn" class="ghost" type="button">Restart Activity</button></div>
+</section>
+<section id="feedback" class="card" aria-live="polite">Complete all five classifications and both written responses, then check your answers.</section>
+</section>
+<section id="complete" class="card" hidden></section>
+<div class="footer">PROTECT SYSTEMS. PROTECT INFORMATION. PROTECT PEOPLE.</div>
+</main>
+<script>
+const S=[
+{scenario:'A teacher stores grades in an online account and reuses the same password on multiple websites.',asset:'Online grade account and grade data',threat:'Attacker using stolen credentials',vuln:'Password reuse',impact:'Unauthorized access or changed grades',control:'Unique passwords and MFA',model:'An attacker could use credentials stolen from another website to exploit the reused password and gain unauthorized access to the teacher’s grade account. Unique passwords and multi-factor authentication make stolen credentials less useful and reduce the likelihood of account compromise.',o:{asset:['The attacker','Online grade account and grade data','The reused password'],threat:['Multi-factor authentication','The grade data','Attacker using stolen credentials'],vuln:['The online account','Password reuse','Login alerts'],impact:['A stronger password','The attacker','Unauthorized access or changed grades'],control:['Unauthorized access','Unique passwords and MFA','Password reuse']}},
+{scenario:'A student finds an unattended faculty laptop that is unlocked and connected to school resources.',asset:'Faculty laptop, email, and files',threat:'Unauthorized person using the device',vuln:'Unattended unlocked device',impact:'Exposed or modified information',control:'Automatic screen lock and training',model:'An unauthorized person could use the unattended, unlocked laptop to access faculty email or files and expose or modify information. Automatic screen locking reduces the opportunity for access, while training helps users secure devices before leaving them unattended.',o:{asset:['The student','The unlocked screen','Faculty laptop, email, and files'],threat:['Automatic screen lock and training','Unauthorized person using the device','School files'],vuln:['A locked classroom','Faculty email','Unattended unlocked device'],impact:['Screen-lock policy','Exposed or modified information','The student'],control:['Private files','Unattended device','Automatic screen lock and training']}},
+{scenario:'A school web server has not been updated for months, and a public software flaw exists.',asset:'School web server and website',threat:'Attacker exploiting the public flaw',vuln:'Missing security patches',impact:'Outage, defacement, or compromise',control:'Patch management and monitoring',model:'An attacker could exploit the known software flaw because the server is missing security patches, causing an outage, website defacement, or broader compromise. Patch management removes known weaknesses, while monitoring can help detect suspicious activity quickly.',o:{asset:['Missing security patches','The attacker','School web server and website'],threat:['The website','Attacker exploiting the public flaw','Patch management and monitoring'],vuln:['Website visitors','Missing security patches','Incident recovery'],impact:['A vulnerability scan','Installing patches','Outage, defacement, or compromise'],control:['The attacker','Patch management and monitoring','The public flaw']}},
+{scenario:'A student discovers a way to view files in a restricted school folder. The student is curious but has not been authorized to test or access the folder.',asset:'Restricted school files and accounts',threat:'Unauthorized access or misuse',vuln:'Improper access permissions',impact:'Exposure, alteration, or loss of school information',control:'Stop, document, and report through an authorized channel',model:'Improper access permissions could allow unauthorized access to restricted school files, leading to exposure, alteration, or loss of information. The student should not continue testing. Stopping, documenting what was observed, and reporting it through an authorized channel protects the system while respecting scope and ethical boundaries.',o:{asset:['The student’s curiosity','Restricted school files and accounts','The reporting process'],threat:['Unauthorized access or misuse','An authorized security review','The school files'],vuln:['Improper access permissions','The student’s report','A defined testing scope'],impact:['A successful report','Exposure, alteration, or loss of school information','Permission to investigate'],control:['Continue testing to collect proof','Share the discovery with classmates','Stop, document, and report through an authorized channel']}}
+];
+const KEYS=['asset','threat','vuln','impact','control'];
+let index=0,totalCorrect=0,completed=0,checked=false;
+const $=id=>document.getElementById(id);
+function shuffle(items){const a=[...items];for(let j=a.length-1;j>0;j--){const k=Math.floor(Math.random()*(j+1));[a[j],a[k]]=[a[k],a[j]]}return a}
+function fill(id,items){const el=$(id);el.innerHTML='';const start=document.createElement('option');start.value='';start.textContent='Select the best answer…';start.disabled=true;start.selected=true;el.appendChild(start);shuffle(items).forEach(text=>{const option=document.createElement('option');option.value=text;option.textContent=text;el.appendChild(option)})}
+function updateProgress(){const shown=Math.min(index+1,S.length);$('progressText').textContent=`Scenario ${shown} of ${S.length}`;$('progressBar').style.width=`${(shown/S.length)*100}%`}
+function render(){const s=S[index];$('scenario').textContent=s.scenario;KEYS.forEach(k=>fill(k,s.o[k]));$('risk').value='';$('why').value='';$('feedback').innerHTML='Complete all five classifications and both written responses, then check your answers.';$('nextBtn').disabled=true;$('nextBtn').textContent=index===S.length-1?'View Results':'Next Scenario';checked=false;updateProgress()}
+function validate(){const missing=KEYS.filter(k=>!$(k).value);if(!$('risk').value.trim())missing.push('risk statement');if(!$('why').value.trim())missing.push('control explanation');return missing}
+function checkAnswers(){if(checked)return;const missing=validate();if(missing.length){$('feedback').innerHTML=`<div class="notice"><b>Complete the activity before checking.</b><br>Missing: ${missing.join(', ')}.</div>`;return}const s=S[index];let score=0;let html='<h2>Feedback</h2><ul>';KEYS.forEach(k=>{const ok=$(k).value===s[k];if(ok)score++;html+=`<li><b>${k.toUpperCase()}</b>: ${ok?'<span class="good">Correct</span>':'<span class="bad">Revise</span>'}. Best answer: ${s[k]}</li>`});const riskWords=$('risk').value.trim().split(/\s+/).length;const whyWords=$('why').value.trim().split(/\s+/).length;html+=`</ul><p><b>Classification score: ${score}/5</b></p>`;html+=riskWords>=10?'<p class="good">Your risk statement is developed enough to compare with the model.</p>':'<p class="bad">Your risk statement is brief. Compare it carefully with the model and add the threat, vulnerability, asset, and impact.</p>';html+=whyWords>=8?'<p class="good">Your control explanation is developed enough to compare with the model.</p>':'<p class="bad">Your control explanation is brief. Explain how the control lowers likelihood, limits impact, or both.</p>';html+=`<div class="model"><b>Model connection:</b><br>${s.model}</div>`;$('feedback').innerHTML=html;totalCorrect+=score;completed++;checked=true;$('nextBtn').disabled=false;$('checkBtn').disabled=true}
+function nextScenario(){if(!checked)return;if(index<S.length-1){index++;$('checkBtn').disabled=false;render()}else{showResults()}}
+function showResults(){$('activity').hidden=true;$('complete').hidden=false;$('progressText').textContent='Activity complete';$('progressBar').style.width='100%';const percent=Math.round((totalCorrect/(S.length*5))*100);let message=percent>=90?'Excellent retrieval and classification.':percent>=75?'Strong work. Review any classifications you missed.':'Review the model connections and try the activity again.';$('complete').innerHTML=`<h2>Risk Chain Builder Complete</h2><div class="scorebox"><div><b>${completed}/${S.length}</b>Scenarios completed</div><div><b>${totalCorrect}/${S.length*5}</b>Classifications correct</div><div><b>${percent}%</b>Overall accuracy</div></div><p>${message}</p><div class="notice"><b>Remember:</b> Only access or test systems when you have clear authorization and a defined scope.</div><div class="actions"><button type="button" onclick="restart()">Try Again</button></div>`}
+function restart(){index=0;totalCorrect=0;completed=0;checked=false;$('activity').hidden=false;$('complete').hidden=true;$('checkBtn').disabled=false;render();window.scrollTo({top:0,behavior:'smooth'})}
+$('checkBtn').addEventListener('click',checkAnswers);$('nextBtn').addEventListener('click',nextScenario);$('resetBtn').addEventListener('click',restart);render();
+</script>
+</body>
+</html>
 
