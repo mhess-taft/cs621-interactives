@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CS621 Incident Triage Simulator</title>
+<style>
+:root{--navy:#062e4f;--teal:#12a6b8;--teal-dark:#087d8b;--pale:#eef7f9;--border:#c5dde5;--amber:#e8a21a;--amber-pale:#fff7e6;--ink:#172033;--muted:#526274;--good:#16794c;--bad:#b33a3a}
+*{box-sizing:border-box}body{margin:0;background:#f4f8fa;color:var(--ink);font-family:Arial,Helvetica,sans-serif;line-height:1.5}.shell{max-width:980px;margin:0 auto;padding:24px}.mast{background:var(--navy);color:#fff;padding:22px 26px;border-radius:14px 14px 0 0}.eyebrow{font-weight:800;letter-spacing:.09em;font-size:.84rem}.module{color:#47c8d2;font-weight:800;letter-spacing:.12em;margin-top:5px;font-size:.78rem}.main{background:#fff;border:1px solid var(--border);border-top:0;border-radius:0 0 14px 14px;padding:26px;box-shadow:0 10px 30px rgba(6,46,79,.08)}h1{color:var(--navy);margin:.1rem 0;font-size:clamp(1.9rem,4vw,2.7rem)}h2{color:var(--navy)}h3{color:var(--teal-dark);margin-bottom:.4rem}.tag{display:inline-block;background:var(--pale);border:1px solid var(--border);border-radius:999px;padding:4px 10px;font-weight:700;font-size:.78rem;color:var(--navy);margin:2px}.boundary,.notice{border-left:7px solid var(--amber);background:var(--amber-pale);padding:13px 15px;margin:17px 0}.notice{border-left-color:var(--teal);background:var(--pale)}.progress-wrap{margin:20px 0 10px}.progress-line{height:10px;background:#dfecef;border-radius:999px;overflow:hidden}.progress{height:100%;width:0;background:linear-gradient(90deg,var(--teal),#47c8d2);transition:width .25s}.progress-label{display:flex;justify-content:space-between;color:var(--muted);font-size:.85rem;margin-top:5px}.card{border:1px solid var(--border);border-radius:13px;padding:20px;margin:16px 0;background:#fff}.case{border-left:8px solid var(--teal);background:linear-gradient(135deg,#fff,#f6fbfc)}.evidence{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--navy);color:#dff9fc;border-radius:10px;padding:14px;white-space:pre-wrap}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{margin:11px 0}label{display:block;color:var(--navy);font-weight:800;margin:0 0 5px}select,textarea{width:100%;border:1px solid #9fc5cf;border-radius:8px;padding:10px;background:#fff;color:var(--ink);font:inherit}textarea{min-height:88px;resize:vertical}select:focus,textarea:focus,button:focus{outline:3px solid rgba(18,166,184,.25);outline-offset:2px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}button{border:0;border-radius:9px;padding:11px 16px;font:700 .95rem Arial;cursor:pointer;background:var(--navy);color:#fff}button.secondary{background:#e7f2f5;color:var(--navy);border:1px solid var(--border)}button:disabled{opacity:.45;cursor:not-allowed}.feedback{margin-top:16px}.good{color:var(--good);font-weight:800}.bad{color:var(--bad);font-weight:800}.feedback table{width:100%;border-collapse:collapse}.feedback th,.feedback td{border:1px solid var(--border);padding:8px;text-align:left;vertical-align:top}.feedback th{background:var(--navy);color:#fff}.model{background:var(--pale);border-left:6px solid var(--teal);padding:13px;margin-top:12px}.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}.score{background:var(--pale);border:1px solid var(--border);border-radius:10px;padding:15px;text-align:center}.score b{display:block;color:var(--navy);font-size:1.6rem}.hidden{display:none}@media(max-width:680px){.shell{padding:0}.mast,.main{border-radius:0}.grid,.score-grid{grid-template-columns:1fr}.main{padding:18px}}@media print{body{background:#fff}.shell{padding:0}.main{box-shadow:none}.actions,.progress-wrap{display:none}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="mast">
+    <div class="eyebrow">CS621 / CYBERSECURITY FOUNDATIONS</div>
+    <div class="module">INCIDENT TRIAGE SIMULATOR</div>
+  </header>
+  <main class="main">
+    <section id="intro">
+      <h1>Analyze the Evidence</h1>
+      <p>For each case, connect the evidence to the risk chain, locate the attack phase, and choose a defensible control. Select the <em>strongest</em> answer supported by the case.</p>
+      <div class="notice"><b>Workflow:</b> EVIDENCE &gt; RISK CHAIN &gt; ATTACK PHASE &gt; CONTROL &gt; AUTHORIZATION</div>
+      <div class="boundary"><b>Course Boundary:</b> Only access or test systems when you have clear authorization and a defined scope.</div>
+      <div><span class="tag">4 cases</span><span class="tag">self-checking</span><span class="tag">written reasoning</span></div>
+      <div class="actions"><button id="startBtn">Start Investigation</button></div>
+    </section>
+
+    <section id="activity" class="hidden">
+      <div class="progress-wrap" aria-label="Activity progress">
+        <div class="progress-line"><div id="bar" class="progress"></div></div>
+        <div class="progress-label"><span id="progressText">Case 1 of 4</span><span id="scoreText">0 classifications correct</span></div>
+      </div>
+      <article class="card case">
+        <div id="caseTag" class="module">CASE 01</div>
+        <h2 id="caseTitle"></h2>
+        <p id="caseText"></p>
+        <div id="evidence" class="evidence"></div>
+      </article>
+
+      <section class="card">
+        <h3>1. Build the Risk Chain</h3>
+        <div class="grid">
+          <div class="field"><label for="asset">Asset</label><select id="asset"></select></div>
+          <div class="field"><label for="threat">Threat</label><select id="threat"></select></div>
+          <div class="field"><label for="vuln">Vulnerability</label><select id="vuln"></select></div>
+          <div class="field"><label for="impact">Impact</label><select id="impact"></select></div>
+        </div>
+        <div class="field"><label for="risk">Write a complete risk statement</label><textarea id="risk" placeholder="A threat could exploit a vulnerability affecting an asset, causing an impact..."></textarea></div>
+      </section>
+
+      <section class="card">
+        <h3>2. Locate and Interrupt the Attack</h3>
+        <div class="grid">
+          <div class="field"><label for="phase">Strongest attack phase</label><select id="phase"></select></div>
+          <div class="field"><label for="cia">Most directly affected CIA principle</label><select id="cia"></select></div>
+          <div class="field"><label for="control">Best control for this case</label><select id="control"></select></div>
+          <div class="field"><label for="function">Primary control function</label><select id="function"></select></div>
+        </div>
+        <div class="field"><label for="reason">Explain how the control reduces risk or supports defense in depth</label><textarea id="reason" placeholder="This control lowers likelihood or impact because..."></textarea></div>
+        <div class="field"><label for="boundary">What authorization or scope boundary applies?</label><textarea id="boundary" placeholder="State what is and is not authorized."></textarea></div>
+        <div class="actions">
+          <button id="checkBtn">Check Analysis</button>
+          <button id="nextBtn" class="secondary" disabled>Next Case</button>
+        </div>
+        <div id="feedback" class="feedback" aria-live="polite"></div>
+      </section>
+    </section>
+
+    <section id="complete" class="hidden"></section>
+  </main>
+</div>
+<script>
+const cases=[
+ {title:"The Weekend Database Transfer",text:"At 3:05 AM, a customer database sends 1.8 GB to an unfamiliar external server. A vendor account logged in shortly before the transfer. That account normally accesses only a reporting portal, but it was able to reach the database server.",evidence:"03:05 | Database-01 -> unknown-server.example | 1.8 GB | HTTPS",asset:"Customer database and customer records",threat:"Attacker using a compromised vendor account",vuln:"Excessive vendor permissions and weak segmentation",impact:"Unauthorized transfer of customer data",phase:"Taking Action",cia:"Confidentiality",control:"Least privilege, segmentation, and exfiltration monitoring",function:"Preventative and detective",model:"A compromised vendor account could exploit excessive permissions and weak segmentation to reach the customer database and exfiltrate records. Least privilege and segmentation restrict the account's path, while monitoring helps detect unusual transfers.",boundary:"Analyze only the provided evidence. Investigating the real vendor or external server would require explicit authorization and scope."},
+ {title:"The Helpful Update",text:"An employee opens an email attachment labeled 'security update.' The laptop becomes slow. An unfamiliar process runs, a scheduled task launches it after every reboot, and the device repeatedly contacts the same external IP.",evidence:"PROCESS: system-helper\nSCHEDULE: @reboot /tmp/.system-helper\nCONNECTION: ESTABLISHED 198.51.100.24:443",asset:"Employee device, account, and reachable company resources",threat:"Attacker operating malware through C2",vuln:"Execution of an untrusted phishing attachment",impact:"Persistent remote access and possible data exposure",phase:"Persistence",cia:"Confidentiality",control:"Endpoint detection, isolation, removal, and clean recovery",function:"Detective and corrective",model:"The attachment created initial access, but the strongest displayed clue is persistence: a scheduled task restarts the malware. The outbound connection is consistent with C2. Endpoint monitoring can detect the behavior; isolation and clean recovery remove access and limit damage.",boundary:"Use the listed evidence or an authorized forensic image. Do not connect to or probe the external IP without permission."},
+ {title:"The Public Database Port",text:"A shop's production server must provide its website over HTTPS. A scan shows its database, cache, and administrative panel are also open to the internet even though they are intended only for internal use.",evidence:"22 SSH | 80 HTTP | 443 HTTPS | 3306 MySQL | 6379 Redis | 8080 Admin",asset:"Production server, services, and customer data",threat:"External attacker scanning and exploiting exposed services",vuln:"Unnecessary internet-facing ports and permissive firewall rules",impact:"Unauthorized access, data compromise, or disruption",phase:"Reconnaissance",cia:"Confidentiality",control:"Restrictive firewall rules and least-privilege service exposure",function:"Preventative",model:"An external attacker can discover unnecessary exposed services during reconnaissance and may exploit them for initial access. Restrictive firewall rules reduce the attack surface by exposing only services that must accept external traffic.",boundary:"Port scanning is active reconnaissance. Scan only localhost or another target explicitly named in the authorized scope."},
+ {title:"The Curious Discovery",text:"During an authorized Cyber Range lab, a student notices that changing part of a URL might reveal a restricted faculty document on a real school system. The lab authorizes work only inside the Cyber Range. The student has not opened the document.",evidence:"AUTHORIZED: Cyber Range only\nOBSERVED: possible school access-control weakness\nACTION: no access attempted",asset:"Restricted faculty document and school system",threat:"Unauthorized access or misuse",vuln:"Possible improper access control",impact:"Exposure or alteration of restricted information",phase:"Reconnaissance",cia:"Confidentiality",control:"Stop, document minimally, and report through an authorized channel",function:"Preventative",model:"A possible access-control weakness could expose restricted school information, but the live school system is outside the student's authorized scope. The correct action is to stop, preserve only minimal information already observed, and report it. Curiosity is not permission.",boundary:"Do not open, test, download, or share the document. Report the observation through the school's authorized channel."}
+];
+const distractors={
+ asset:["The attacker","The security control","Public information"],
+ threat:["The affected data","A security policy","An authorized auditor"],
+ vuln:["The final impact","The asset itself","A correctly configured control"],
+ impact:["The defensive control","Permission to investigate","The attacker"],
+ phase:["Initial Access","Lateral Movement","Evading Detection","Taking Action","Persistence","Reconnaissance"],
+ cia:["Confidentiality","Integrity","Availability"],
+ control:["Remove all monitoring","Publish the evidence","Use one shared administrator account"],
+ function:["Preventative","Detective","Corrective","Preventative and detective","Detective and corrective"]
+};
+let index=0,total=0,completed=0,locked=false;
+const ids=["asset","threat","vuln","impact","phase","cia","control","function"];
+const $=id=>document.getElementById(id);
+function shuffled(items){return [...new Set(items)].sort(()=>Math.random()-.5)}
+function fill(id,correct){const pool=id==="control"?[correct,...distractors.control]:[correct,...distractors[id]];$(id).innerHTML='<option value="">Select the strongest answer...</option>'+shuffled(pool).map(v=>`<option>${v}</option>`).join("")}
+function render(){const c=cases[index];locked=false;$("caseTag").textContent=`CASE ${String(index+1).padStart(2,"0")}`;$("caseTitle").textContent=c.title;$("caseText").textContent=c.text;$("evidence").textContent=c.evidence;ids.forEach(id=>fill(id,c[id]));["risk","reason","boundary"].forEach(id=>$(id).value="");$("feedback").innerHTML="";$("checkBtn").disabled=false;$("nextBtn").disabled=true;$("nextBtn").textContent=index===cases.length-1?"View Results":"Next Case";$("progressText").textContent=`Case ${index+1} of ${cases.length}`;$("bar").style.width=`${(index/cases.length)*100}%`;window.scrollTo({top:0,behavior:"smooth"})}
+function missing(){const m=ids.filter(id=>!$(id).value);["risk","reason","boundary"].forEach(id=>{if(!$(id).value.trim())m.push(id)});return m}
+function check(){if(locked)return;const m=missing();if(m.length){$("feedback").innerHTML=`<div class="boundary"><b>Complete the analysis first.</b> Missing: ${m.join(", ")}.</div>`;return}const c=cases[index];let score=0;let rows="";ids.forEach(id=>{const ok=$(id).value===c[id];if(ok)score++;rows+=`<tr><td>${id.replace(/^./,x=>x.toUpperCase())}</td><td class="${ok?'good':'bad'}">${ok?'Correct':'Revise'}</td><td>${c[id]}</td></tr>`});const riskWords=$("risk").value.trim().split(/\s+/).length,reasonWords=$("reason").value.trim().split(/\s+/).length,boundaryWords=$("boundary").value.trim().split(/\s+/).length;total+=score;completed++;locked=true;$("scoreText").textContent=`${total} classifications correct`;$("feedback").innerHTML=`<table><thead><tr><th>Decision</th><th>Result</th><th>Strongest answer</th></tr></thead><tbody>${rows}</tbody></table><p class="${riskWords>=12?'good':'bad'}">Risk statement: ${riskWords>=12?'developed enough to compare':'add the asset, threat, vulnerability, and impact'}.</p><p class="${reasonWords>=10?'good':'bad'}">Control reasoning: ${reasonWords>=10?'developed enough to compare':'explain how likelihood or impact changes'}.</p><p class="${boundaryWords>=8?'good':'bad'}">Scope statement: ${boundaryWords>=8?'developed enough to compare':'state what is and is not authorized'}.</p><div class="model"><b>Model connection:</b><br>${c.model}<br><br><b>Boundary:</b> ${c.boundary}</div>`;$("checkBtn").disabled=true;$("nextBtn").disabled=false}
+function next(){if(index<cases.length-1){index++;render()}else finish()}
+function finish(){$("activity").classList.add("hidden");$("complete").classList.remove("hidden");const pct=Math.round(total/(cases.length*ids.length)*100);$("complete").innerHTML=`<h1>Investigation Complete</h1><div class="score-grid"><div class="score"><b>${completed}/${cases.length}</b>Cases analyzed</div><div class="score"><b>${total}/${cases.length*ids.length}</b>Classifications</div><div class="score"><b>${pct}%</b>Accuracy</div></div><div class="notice"><b>Final check:</b> Strong triage connects evidence to the risk chain, distinguishes attack phases, selects a control that fits, and stays inside authorization and scope.</div><div class="actions"><button onclick="restart()">Try Again</button><button class="secondary" onclick="window.print()">Print Results</button></div>`;window.scrollTo({top:0,behavior:"smooth"})}
+function restart(){index=0;total=0;completed=0;$("complete").classList.add("hidden");$("activity").classList.remove("hidden");$("scoreText").textContent="0 classifications correct";render()}
+$("startBtn").addEventListener("click",()=>{$("intro").classList.add("hidden");$("activity").classList.remove("hidden");render()});$("checkBtn").addEventListener("click",check);$("nextBtn").addEventListener("click",next);
+</script>
+</body>
+</html>
